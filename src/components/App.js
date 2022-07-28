@@ -7,8 +7,12 @@ import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import Login from "./Login";
+import Register from "./Register";
 import { CurrentUserContext } from "../context/CurrentUserContext";
+import ProtectedRoute from "./ProtectedRoute";
 import { api } from "../utils/Api";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 const App = () => {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -21,6 +25,7 @@ const App = () => {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [loggedIn, setloggedIn] = React.useState(false);
 
   React.useEffect(() => {
     api
@@ -146,8 +151,13 @@ const App = () => {
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-        <Main
+      <Header />
+      <Switch>
+        <ProtectedRoute
+          exact
+          path='/mesto'
+          loggedIn={loggedIn}
+          component={Main}
           cards={cards}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -155,8 +165,22 @@ const App = () => {
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
           onCardDelete={handleCardDelete}
-        />
+        >
+        </ProtectedRoute>
+        <Route exact path='*'>
+        {loggedIn ? <Redirect to="/mesto" /> : <Redirect to="/sign-in" />}
+        </Route>
+        <Route  path='/sign-up'>
+          <Login />
+        </Route>
+        <Route  path='/sign-in'>
+          <Register />
+        </Route>
+        </Switch>
+        
+        
         <Footer />
+        
         <AddPlacePopup
           isLoading={isLoading}
           onUpdateCard={handleAddPlaceSubmit}
