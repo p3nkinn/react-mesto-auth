@@ -9,10 +9,11 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
+import * as auth from "../utils/Auth"
 import { CurrentUserContext } from "../context/CurrentUserContext";
 import ProtectedRoute from "./ProtectedRoute";
 import { api } from "../utils/Api";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 
 const App = () => {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -26,7 +27,7 @@ const App = () => {
   const [cards, setCards] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [loggedIn, setloggedIn] = React.useState(false);
-
+  const history = useHistory();
   React.useEffect(() => {
     api
       .getProfileInfo()
@@ -148,20 +149,51 @@ const App = () => {
       });
   };
 
+  const handleRegisterSubmit = (email, password) => {
+    auth.register(email, password)
+    .then(() => {
+      setloggedIn(true);
+      history.push("/sign-in")
+    })
+    .catch((err) => {
+      if(err.status === 400) {
+        console.log('400 - некорректно заполнено одно из полей');
+      }
+      setloggedIn(false)
+    })
+  }
+
+  const handleLoginSubmit = (email, password) => {
+    auth.login(email, password)
+    .then((res) => {
+      localStorage.setItem('jwt', res.token);
+      setloggedIn(true)
+      history.push("/")
+    })
+    .catch((err) => {
+      if(err.status === 400) {
+        console.log('400 — не передано одно из полей');
+      } else if (err.status === 401) {
+        console.log('401 - пользователь с email не найден ')
+      }
+      setloggedIn(false)
+    })
+  }
+
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
       <Header />
       <Switch>
-      <Route  path='/sign-up'>
-          <Login />
+        <Route  path='/sign-up'>
+          <Login onLogin={handleLoginSubmit}/>
         </Route>
         <Route  path='/sign-in'>
-          <Register />
+          <Register onRegister={handleRegisterSubmit} />
         </Route>
         <ProtectedRoute
           exact
-          path='/mesto'
+          path='/'
           loggedIn={loggedIn}
           component={Main}
           cards={cards}
@@ -174,14 +206,10 @@ const App = () => {
         >
         </ProtectedRoute>
         <Route exact path='*'>
-        {loggedIn ? <Redirect to="/mesto" /> : <Redirect to="/sign-in" />}
+        {!loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
         </Route>
-        
         </Switch>
-        
-        
         <Footer />
-        
         <AddPlacePopup
           isLoading={isLoading}
           onUpdateCard={handleAddPlaceSubmit}
