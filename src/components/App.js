@@ -153,9 +153,15 @@ const App = () => {
       <CurrentUserContext.Provider value={currentUser}>
       <Header />
       <Switch>
+        <Route  path='/sign-up'>
+          <Login />
+        </Route>
+        <Route  path='/sign-in'>
+          <Register />
+        </Route>
         <ProtectedRoute
           exact
-          path='/mesto'
+          path='/'
           loggedIn={loggedIn}
           component={Main}
           cards={cards}
@@ -168,19 +174,10 @@ const App = () => {
         >
         </ProtectedRoute>
         <Route exact path='*'>
-        {loggedIn ? <Redirect to="/mesto" /> : <Redirect to="/sign-in" />}
-        </Route>
-        <Route  path='/sign-up'>
-          <Login />
-        </Route>
-        <Route  path='/sign-in'>
-          <Register />
+        {!loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
         </Route>
         </Switch>
-        
-        
         <Footer />
-        
         <AddPlacePopup
           isLoading={isLoading}
           onUpdateCard={handleAddPlaceSubmit}
