@@ -28,7 +28,7 @@ const Register = ({onRegister}) => {
     });
   };
     return (
-      <div className="register">
+      <section className="register">
         <p className="register__welcome">
             Пожалуйста, зарегистрируйтесь.
         </p>
@@ -61,7 +61,7 @@ const Register = ({onRegister}) => {
           <p>Уже зарегистрированы?</p>
           <Link to="login" className="register__login-link">Войти</Link>
         </div>
-        </div>
+        </section>
       );
 }
 

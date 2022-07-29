@@ -153,6 +153,12 @@ const App = () => {
       <CurrentUserContext.Provider value={currentUser}>
       <Header />
       <Switch>
+      <Route  path='/sign-up'>
+          <Login />
+        </Route>
+        <Route  path='/sign-in'>
+          <Register />
+        </Route>
         <ProtectedRoute
           exact
           path='/mesto'
@@ -170,12 +176,7 @@ const App = () => {
         <Route exact path='*'>
         {loggedIn ? <Redirect to="/mesto" /> : <Redirect to="/sign-in" />}
         </Route>
-        <Route  path='/sign-up'>
-          <Login />
-        </Route>
-        <Route  path='/sign-in'>
-          <Register />
-        </Route>
+        
         </Switch>
         
         
