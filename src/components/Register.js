@@ -23,7 +23,7 @@ const Register = ({onRegister}) => {
 
   const LinkMark = (
     <p className="auth__paragraph">
-      Уже зарегистрированы? <Link className="auth__link" to="/sign-up">Войти</Link>
+      Уже зарегистрированы? <Link className="auth__link" to="/sign-in">Войти</Link>
     </p>
   )
   
