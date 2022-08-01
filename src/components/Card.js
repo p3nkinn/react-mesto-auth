@@ -22,7 +22,8 @@ const Card = ({ card, onCardClick, onCardLike, onCardDelete }) => {
     onCardLike(card);
   };
 
-  const handleCardDelete = () => {
+  const handleCardDelete = (e) => {
+    e.preventDefault();
     onCardDelete(card);
   };
 

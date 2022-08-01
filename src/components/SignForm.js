@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const SignForm = ({
   classAuth,
   formName,
@@ -10,12 +9,9 @@ const SignForm = ({
   textBtn,
   onSubmit,
   LinkMark,
-  
 }) => {
   return (
-    <div
-      className={`auth auth_${classAuth}`}
-    >
+    <div className={`auth auth_${classAuth}`}>
       <div className="auth__container">
         <form
           onSubmit={onSubmit}
